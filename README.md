@@ -34,6 +34,10 @@ A repository of publicly available datasets for testing & demonstration purposes
   * Records on given baby names in Austria from 2010-2016
   * src: https://www.data.gv.at/katalog/dataset/603066f6-0f0a-3806-b394-f14b7d2cb437
   * single-table: 534k records, incl free text column
+* `gleif`
+  * GLEIF records of business entities, and their relations to each other
+  * src: https://www.gleif.org/
+  * two-table: 2.2m organizations w/ 370k relations; self-referential
 * `grocery`
   * 4y purchase records for an online grocery retailer
   * 3-table: 40k customers w/ 303k orders w/ 4.3m items
