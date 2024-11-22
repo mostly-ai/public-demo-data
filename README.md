@@ -65,6 +65,10 @@ A repository of publicly available datasets for testing & demonstration purposes
   * Marathon split times for Vienna City Marathon
   * src: self-scraped from http://www.vienna-marathon.com/
   * single-table: 5k runners w/ 14 cols
+* `medical`
+  * Medical Abstracts
+  * src: https://github.com/sebischair/Medical-Abstracts-TC-Corpus
+  * single-table: 2x 7k with 1 categorical and 1 text (up to 4000 chars)
 * `netflix`
   * Netflix Prize data
   * src: https://www.kaggle.com/netflix-inc/netflix-prize-data
