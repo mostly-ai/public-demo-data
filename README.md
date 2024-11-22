@@ -10,6 +10,10 @@ A repository of publicly available datasets for testing & demonstration purposes
   * 2015 Flight Delays and Cancellations
   * src: https://www.kaggle.com/datasets/usdot/flight-delays
   * single-table: 100k flights w/ 20 cols, incl geo info
+* `arxiv`
+  * 2007-2014 arxviv papers containing words `synthetic` and `data`
+  * src: https://www.kaggle.com/datasets/Cornell-University/arxiv
+  * single-table: 23k records with 1 date, 1 categorical and 3 text fields
 * `bank_marketing`
   * Direct marketing campaigns for aPortuguese bank
   * src: https://archive.ics.uci.edu/ml/datasets/bank+marketing
