@@ -57,6 +57,9 @@ A repository of publicly available datasets for testing & demonstration purposes
 * `grocery`
   * 4y purchase records for an online grocery retailer
   * 3-table: 40k customers w/ 303k orders w/ 4.3m items
+* `headlines`
+  * 201k news headlines with category and date
+  * src: https://www.kaggle.com/code/imdevskp/news-category-classification/notebook
 * `housing_at`
   * 30y of geo-encoded property transactions in Austria
   * src: self-scraped from https://www.data.gv.at/
