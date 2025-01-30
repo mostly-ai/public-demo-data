@@ -42,10 +42,6 @@ A repository of publicly available datasets for testing & demonstration purposes
   * Credit Card Fraud Detection
   * src: https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
   * single-table: 284k records w/ 31 cols, incl highly-imbalanced target
-* `fannie_mae`
-  * Fannie MAE Mortgage data used for NVIDIA blog post
-  * src: https://docs.rapids.ai/datasets/mortgage-data
-  * 2-table: million of loans and billions (!) of records
 * `firstnames_at`
   * Records on given baby names in Austria from 2010-2016
   * src: https://www.data.gv.at/katalog/dataset/603066f6-0f0a-3806-b394-f14b7d2cb437
