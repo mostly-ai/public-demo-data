@@ -3,7 +3,7 @@ import pandas as pd
 
 # 1986 - 2010
 
-dd = pd.read_csv('lotto-at/lotto-ergebnisse-1986-2010.csv', encoding='latin-1', sep=';')
+dd = pd.read_csv('orig/lotto-ergebnisse-1986-2010.csv.gz', encoding='latin-1', sep=';')
 dd.columns = [f'c{i}' for i in range(dd.shape[1])]
 dd = dd.dropna(how='all', axis=1).dropna(how='all', axis=0)
 dd = dd.loc[~dd['c4'].isna()]
@@ -42,12 +42,12 @@ for i in range(len(dd)):
     dd.at[i, 'Datum'] = dd.at[i, 'Datum'].replace(year=year)
     if i < len(dd) - 1 and dd['Datum'].dt.month[i+1] == 1 and dd['Datum'].dt.month[i] == 12:
         year += 1
-dd.to_csv('lotto-1986-2010.csv', index=False)
+d1 = dd.copy()
 
 
 # 2010 - 2017
 
-df = pd.read_csv('lotto-at/lotto-ziehungen-2010-2017.csv', encoding='latin-1', sep=';')
+df = pd.read_csv('orig/lotto-ziehungen-2010-2017.csv.gz', encoding='latin-1', sep=';')
 df.columns = [f'c{i}' for i in range(df.shape[1])]
 df = df.dropna(how='all', axis=1).dropna(how='all', axis=0)
 df = df.loc[~df['c4'].isna()]
@@ -95,14 +95,14 @@ for i in range(len(dd)):
     dd.at[i, 'Datum'] = dd.at[i, 'Datum'].replace(year=year)
     if i < len(dd) - 1 and dd['Datum'].dt.month[i+1] == 1 and dd['Datum'].dt.month[i] == 12:
         year += 1
-dd.to_csv('lotto-2010-2017.csv', index=False)
+d2 = dd.copy()
 
 
 # 2018 - 2025
 
 dfs = []
 for y in [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]:
-    fn = f'lotto-at/NN_W2D_STAT_Lotto_{y}.csv'
+    fn = f'orig/NN_W2D_STAT_Lotto_{y}.csv.gz'
     df = pd.read_csv(fn, encoding='latin-1', sep=';')
     df1 = df.iloc[[(2*i) for i in range(len(df)//2)]].reset_index(drop=True)
     df2 = df.iloc[[(2*i)+1 for i in range(len(df)//2)]].reset_index(drop=True).add_prefix('x')
@@ -130,34 +130,38 @@ for y in [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]:
     dd['Datum'] = pd.to_datetime(dd['Datum'], format="%d.%m.%Y")
     dfs.append(dd)
 df = pd.concat(dfs).reset_index(drop=True)
-df.to_csv('lotto-2018-2025.csv', index=False)
+d3 = df.copy()
 
 
 # CONCAT
 
-d1 = pd.read_csv('lotto-1986-2010.csv')
-d2 = pd.read_csv('lotto-2010-2017.csv')
-d3 = pd.read_csv('lotto-2018-2025.csv')
 df = pd.concat([d1, d2, d3],axis=0)[d3.columns]
 df['6er - Betrag'] = df['6er - Betrag'].astype(str).str.replace('1 ', '').astype(float)
 df['Datum'] = pd.to_datetime(df['Datum'])
 idx = df.Datum.dt.year < 2001
 for col in df:
     if col.endswith('Betrag'):
-        df[col] = df[col].where(-idx, (df[col] / 13.7602).round(2))
+        df[col] = df[col].where(-idx, (df[col].astype(float) / 13.7602).round(2))
         df[col] = df[col].astype("Float64")
     if col.endswith('Gewinne') and df.dtypes[col] != 'object':
         df[col] = df[col].astype("Int64")
 df['6er - Gewinne'] = df['6er - Gewinne'].str.strip().replace({'2JP': 'DJP', '2 JP': 'DJP', '3 JP': '3JP', '3-JP': '3JP', '0': 'JP'})
 df['5er ZZ - Gewinne'] = df['5er ZZ - Gewinne'].str.strip().replace({'2JP': 'DJP', '2 JP': 'DJP', '3 JP': '3JP', '3-JP': '3JP', '0': 'JP'})
+df['5er - Gewinne'] = df['5er - Gewinne'].astype("Int64")
+df['4er ZZ - Gewinne'] = df['4er ZZ - Gewinne'].astype("Int64")
+df['4er - Gewinne'] = df['4er - Gewinne'].astype("Int64")
+df['3er ZZ - Gewinne'] = df['3er ZZ - Gewinne'].astype("Int64")
+df['3er - Gewinne'] = df['3er - Gewinne'].astype("Int64")
+df['ZZ - Gewinne'] = df['ZZ - Gewinne'].astype("Int64")
+
 df['6er - Ausbezahlt'] = df['6er - Gewinne'].fillna("0").mask(df['6er - Gewinne'].fillna("0").str.endswith('JP'), 0).astype(int) * df['6er - Betrag']
-df['5er ZZ - Ausbezahlt'] = df['5er ZZ - Gewinne'].fillna("0").mask(df['5er ZZ - Gewinne'].fillna("0").str.endswith('JP'), "0").astype(int)
-df['5er - Ausbezahlt'] = df['5er - Gewinne'] * df['5er - Betrag']
-df['4er ZZ - Ausbezahlt'] = df['4er ZZ - Gewinne'] * df['4er ZZ - Betrag']
-df['4er - Ausbezahlt'] = df['4er - Gewinne'] * df['4er - Betrag']
-df['3er ZZ - Ausbezahlt'] = df['3er ZZ - Gewinne'] * df['3er ZZ - Betrag']
-df['3er - Ausbezahlt'] = df['3er - Gewinne'] * df['3er - Betrag']
-df['ZZ - Ausbezahlt'] = df['ZZ - Gewinne'] * df['ZZ - Betrag']
+df['5er ZZ - Ausbezahlt'] = df['5er ZZ - Gewinne'].fillna("0").mask(df['5er ZZ - Gewinne'].fillna("0").str.endswith('JP'), "0").astype(int) * df['5er ZZ - Betrag']
+df['5er - Ausbezahlt'] = df['5er - Gewinne'].astype(float) * df['5er - Betrag'].astype(float)
+df['4er ZZ - Ausbezahlt'] = df['4er ZZ - Gewinne'].astype(float) * df['4er ZZ - Betrag'].astype(float)
+df['4er - Ausbezahlt'] = df['4er - Gewinne'].astype(float) * df['4er - Betrag'].astype(float)
+df['3er ZZ - Ausbezahlt'] = df['3er ZZ - Gewinne'].astype(float) * df['3er ZZ - Betrag'].astype(float)
+df['3er - Ausbezahlt'] = df['3er - Gewinne'].astype(float) * df['3er - Betrag'].astype(float)
+df['ZZ - Ausbezahlt'] = df['ZZ - Gewinne'].astype(float) * df['ZZ - Betrag'].astype(float)
 df['Gesamt - Ausbezahlt'] = (
     df['6er - Ausbezahlt'].fillna(0).astype(float) + 
     df['5er ZZ - Ausbezahlt'].fillna(0).astype(float) +
@@ -168,6 +172,7 @@ df['Gesamt - Ausbezahlt'] = (
     df['3er - Ausbezahlt'].fillna(0).astype(float) +
     df['ZZ - Ausbezahlt'].fillna(0).astype(float)
 )
+
 df['Datum'] = pd.to_datetime(df['Datum']).dt.date
 df = df.reset_index(drop=True)
 df = df[['Datum',
@@ -205,5 +210,8 @@ df = df[['Datum',
  'ZZ - Ausbezahlt',
 ]]
 df['6er - Pott Start'] = df['6er - Betrag'].shift(1).where(df['6er - Gewinne'].shift(1).str.endswith('JP'))
-df['6er - Pott Bonus'] = df['6er - Betrag'] - df['6er - Pott Start'].fillna(0)
-df.to_parquet('lotto-1986-2025.pqt', index=False)
+df['6er - Pott Bonus'] = (df['6er - Betrag'] - df['6er - Pott Start'].fillna(0)).round(2)
+for col in df.select_dtypes(float):
+  df[col] = df[col].round(2)
+df = df.sort_values('Datum', ascending=False)
+df.to_csv('lotto-1986-2025.csv', index=False)
