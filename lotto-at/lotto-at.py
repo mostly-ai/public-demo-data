@@ -104,7 +104,7 @@ dfs = []
 for y in [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]:
     print(y)
     fn = f'orig/NN_W2D_STAT_Lotto_{y}.csv.gz'
-    df = pd.read_csv(fn, encoding='latin-1', sep=';')
+    df = pd.read_csv(fn, encoding='latin-1', sep=';', dtype='str')
     df1 = df.iloc[[(2*i) for i in range(len(df)//2)]].reset_index(drop=True)
     df2 = df.iloc[[(2*i)+1 for i in range(len(df)//2)]].reset_index(drop=True).add_prefix('x')
     dd = pd.concat([df1, df2.drop(columns=['xDatum'])], axis=1)
