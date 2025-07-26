@@ -221,4 +221,6 @@ df = df.sort_values('Datum', ascending=False)
 cols = ['Zahl 1', 'Zahl 2', 'Zahl 3', 'Zahl 4', 'Zahl 5', 'Zahl 6']
 df[cols] = np.sort(df[cols].values, axis=1)
 
+df.columns = [c.replace('Gewinne', 'Gewinner') for c in df.columns]
+
 df.to_csv('lotto-1986-2025.csv', index=False)
