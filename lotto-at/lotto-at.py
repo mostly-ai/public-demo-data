@@ -1,5 +1,5 @@
 import pandas as pd
-
+import numpy as np
 
 # 1986 - 2010
 
@@ -102,6 +102,7 @@ d2 = dd.copy()
 
 dfs = []
 for y in [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]:
+    print(y)
     fn = f'orig/NN_W2D_STAT_Lotto_{y}.csv.gz'
     df = pd.read_csv(fn, encoding='latin-1', sep=';')
     df1 = df.iloc[[(2*i) for i in range(len(df)//2)]].reset_index(drop=True)
@@ -125,7 +126,9 @@ for y in [2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025]:
     for c in dd.columns:
         if c.endswith('Betrag'):
             dd[c] = dd[c].str.replace('.', '', regex=False).str.replace(',', '.', regex=False)
-        if c.endswith('Gewinne'):
+        elif c == '5er - Gewinne':
+            dd[c] = dd[c].astype("Int64")
+        elif c.endswith('Gewinne'):
             dd[c] = dd[c].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False)
     dd['Datum'] = pd.to_datetime(dd['Datum'], format="%d.%m.%Y")
     dfs.append(dd)
@@ -147,7 +150,6 @@ for col in df:
         df[col] = df[col].astype("Int64")
 df['6er - Gewinne'] = df['6er - Gewinne'].str.strip().replace({'2JP': 'DJP', '2 JP': 'DJP', '3 JP': '3JP', '3-JP': '3JP', '0': 'JP'})
 df['5er ZZ - Gewinne'] = df['5er ZZ - Gewinne'].str.strip().replace({'2JP': 'DJP', '2 JP': 'DJP', '3 JP': '3JP', '3-JP': '3JP', '0': 'JP'})
-df['5er - Gewinne'] = df['5er - Gewinne'].astype("Int64")
 df['4er ZZ - Gewinne'] = df['4er ZZ - Gewinne'].astype("Int64")
 df['4er - Gewinne'] = df['4er - Gewinne'].astype("Int64")
 df['3er ZZ - Gewinne'] = df['3er ZZ - Gewinne'].astype("Int64")
@@ -214,4 +216,9 @@ df['6er - Pott Bonus'] = (df['6er - Betrag'] - df['6er - Pott Start'].fillna(0))
 for col in df.select_dtypes(float):
   df[col] = df[col].round(2)
 df = df.sort_values('Datum', ascending=False)
+
+# sort zahlen
+cols = ['Zahl 1', 'Zahl 2', 'Zahl 3', 'Zahl 4', 'Zahl 5', 'Zahl 6']
+df[cols] = np.sort(df[cols].values, axis=1)
+
 df.to_csv('lotto-1986-2025.csv', index=False)
