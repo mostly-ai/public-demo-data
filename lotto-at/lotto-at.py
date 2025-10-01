@@ -35,6 +35,7 @@ for c in dd.columns:
         dd[c] = dd[c].str.replace('.', '', regex=False).str.replace(',', '.', regex=False)
     if c.endswith('Gewinne'):
         dd[c] = dd[c].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False)
+dd.at[2214, "6er - Betrag"] = "808317.30" # fix data entry
 dd = dd.reset_index(drop=True)
 dd['Datum'] = pd.to_datetime(dd['Datum'].str.replace(' ', '') + '1988', format="%d.%m.%Y")
 year = 1986
